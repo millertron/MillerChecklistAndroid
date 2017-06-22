@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MillerChecklistAndroid</string>
+    <string name="main_welcome_message">Welcome to MUTEX</string>
+    <string name="main_login_instructions">Please login with your MUTEX account.</string>
+    <string name="main_username_label">Username</string>
+    <string name="main_password_label">Password</string>
+    <string name="main_login_button">LOGIN</string>
+    <string name="main_signup_instructions">If you do not have a MUTEX account,\nplease sign up to create one at our website.</string>
 </resources>
