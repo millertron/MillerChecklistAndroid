@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (checkAuthenticationToken()) {
+        if (checkAuthentication()) {
             navigateToDashboard();
         } else {
             displayLoginForm();
@@ -39,8 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkAuthenticationToken() {
-        return false;
+    private boolean checkAuthentication() {
+        if (User.getCurrentUser() != null){
+            return true;
+        } else return false;
     }
 
     private void navigateToDashboard() {
@@ -71,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void submitAndProcessAuthenticationRequest() throws IOException {
 
-        AuthAsyncTask authAsyncTask = new AuthAsyncTask();
-        authAsyncTask.execute(this, usernameInput.getText().toString(), passwordInput.getText().toString());
+        AuthAsyncTask authAsyncTask = new AuthAsyncTask(this);
+        authAsyncTask.execute(usernameInput.getText().toString(), passwordInput.getText().toString());
 
         loginButton.setClickable(true);
     }
@@ -82,9 +84,8 @@ public class MainActivity extends AppCompatActivity {
         private Context context;
         private static final String DELIMITER = "%BREAK%";
 
-        public void execute(Context context, String... params){
+        public AuthAsyncTask(Context context){
             this.context = context;
-            execute(params);
         }
 
         @Override
@@ -144,7 +145,18 @@ public class MainActivity extends AppCompatActivity {
                             .append(jsonObj.getString("last_name"))
                             .append("!");
                     message = sb.toString();
+
+                    User user = new User(jsonObj.getInt("id"),
+                            jsonObj.getString("username"),
+                            jsonObj.getString("first_name"),
+                            jsonObj.getString("last_name"),
+                            jsonObj.getString("email"),
+                            jsonObj.getString("api_key"));
+
+                    User.setCurrentUser(user);
+
                 } catch (Exception e){
+                    Log.e(context.getClass().getName(), Log.getStackTraceString(e));
                     message = responseParams[1];
                 }
             }else {

@@ -43,6 +43,7 @@
             />
         <EditText
             android:id="@+id/username_input"
+            android:maxLines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
@@ -54,6 +55,7 @@
             />
         <EditText
             android:id="@+id/password_input"
+            android:maxLines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
