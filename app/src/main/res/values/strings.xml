@@ -18,4 +18,7 @@
     <string name="main_password_label">Password</string>
     <string name="main_login_button">LOGIN</string>
     <string name="main_signup_instructions">If you do not have a MUTEX account,\nplease sign up to create one at our website.</string>
+    <string name="dashboard_tab_daily">Daily</string>
+    <string name="dashboard_tab_weekly">Weekly</string>
+    <string name="dashboard_tab_monthly">Monthly</string>
 </resources>

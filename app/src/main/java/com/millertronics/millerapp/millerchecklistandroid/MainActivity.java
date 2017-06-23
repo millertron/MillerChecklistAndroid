@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewFlipper viewFlipper;
     //Dashboard views
+    private TabHost tabHost;
     private TextView dashboardHeader;
 
     //Login form views
@@ -58,8 +60,26 @@ public class MainActivity extends AppCompatActivity {
             viewFlipper.setDisplayedChild(0);
         }
         User user = User.getCurrentUser();
+        tabHost = (TabHost) findViewById(R.id.tabhost);
+        tabHost.setup();
+
+        TabHost.TabSpec spec = tabHost.newTabSpec(getString(R.string.dashboard_tab_daily));
+        spec.setContent(R.id.tab_daily);
+        spec.setIndicator(getString(R.string.dashboard_tab_daily));
+        tabHost.addTab(spec);
+
+        spec = tabHost.newTabSpec(getString(R.string.dashboard_tab_weekly));
+        spec.setContent(R.id.tab_weekly);
+        spec.setIndicator(getString(R.string.dashboard_tab_weekly));
+        tabHost.addTab(spec);
+
+        spec = tabHost.newTabSpec(getString(R.string.dashboard_tab_monthly));
+        spec.setContent(R.id.tab_monthly);
+        spec.setIndicator(getString(R.string.dashboard_tab_monthly));
+        tabHost.addTab(spec);
+
         dashboardHeader = (TextView) findViewById(R.id.dashboard_heading);
-        dashboardHeader.setText("Welcome! You are currently logged in as \n"
+        dashboardHeader.setText("Checklists for "
             + user.getFirstName() + " " + user.getLastName()
                 + " (" + user.getUsername() + ")");
 
