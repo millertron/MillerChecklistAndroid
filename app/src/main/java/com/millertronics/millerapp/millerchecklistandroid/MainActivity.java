@@ -1,9 +1,7 @@
 package com.millertronics.millerapp.millerchecklistandroid;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import org.json.JSONObject;
 
@@ -23,6 +23,11 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ViewFlipper viewFlipper;
+    //Dashboard views
+    private TextView dashboardHeader;
+
+    //Login form views
     private EditText usernameInput;
     private EditText passwordInput;
     private Button loginButton;
@@ -30,9 +35,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
 
         if (checkAuthentication()) {
-            navigateToDashboard();
+            displayDashboard();
         } else {
             displayLoginForm();
         }
@@ -45,12 +53,21 @@ public class MainActivity extends AppCompatActivity {
         } else return false;
     }
 
-    private void navigateToDashboard() {
+    private void displayDashboard() {
+        if (viewFlipper.getDisplayedChild() != 0) {
+            viewFlipper.setDisplayedChild(0);
+        }
+        User user = User.getCurrentUser();
+        dashboardHeader = (TextView) findViewById(R.id.dashboard_heading);
+        dashboardHeader.setText("Welcome! You are currently logged in as \n"
+            + user.getFirstName() + " " + user.getLastName()
+                + " (" + user.getUsername() + ")");
 
     }
 
     private void displayLoginForm() {
-        setContentView(R.layout.activity_main);
+
+        viewFlipper.setDisplayedChild(1);
 
         usernameInput = (EditText) findViewById(R.id.username_input);
         passwordInput = (EditText) findViewById(R.id.password_input);
@@ -58,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                loginButton.setClickable(false);
+                disableLoginButton();
                 try {
                     submitAndProcessAuthenticationRequest();
                 }catch (Exception e){
@@ -71,21 +88,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void submitAndProcessAuthenticationRequest() throws IOException {
+    private void disableLoginButton() {
+        loginButton.setClickable(false);
+    }
 
+    private void submitAndProcessAuthenticationRequest() throws IOException {
         AuthAsyncTask authAsyncTask = new AuthAsyncTask(this);
         authAsyncTask.execute(usernameInput.getText().toString(), passwordInput.getText().toString());
-
-        loginButton.setClickable(true);
     }
 
     private class AuthAsyncTask extends AsyncTask<String, Void, String> {
 
-        private Context context;
+        private MainActivity mainActivity;
         private static final String DELIMITER = "%BREAK%";
 
-        public AuthAsyncTask(Context context){
-            this.context = context;
+        public AuthAsyncTask(MainActivity mainActivity){
+            this.mainActivity = mainActivity;
         }
 
         @Override
@@ -156,22 +174,28 @@ public class MainActivity extends AppCompatActivity {
                     User.setCurrentUser(user);
 
                 } catch (Exception e){
-                    Log.e(context.getClass().getName(), Log.getStackTraceString(e));
+                    Log.e(mainActivity.getClass().getName(), Log.getStackTraceString(e));
                     message = responseParams[1];
                 }
             }else {
                 message = responseParams[1];
             }
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
             builder.setMessage(message);
             builder.setCancelable(false);
             builder.setPositiveButton(R.string.dialog_ok,
                     new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface di, int i){
-                            di.cancel();
+                        mainActivity.enableLoginButton();
+                        mainActivity.displayDashboard();
+                        di.cancel();
                         }
                     });
             builder.show();
         }
+    }
+
+    public void enableLoginButton(){
+        loginButton.setClickable(true);
     }
 }
