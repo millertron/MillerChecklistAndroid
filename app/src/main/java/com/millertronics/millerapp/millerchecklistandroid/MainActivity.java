@@ -170,10 +170,11 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
 
-            String[] responseParams = result.split(DELIMITER);
+            final String[] responseParams = result.split(DELIMITER);
 
             String message = null;
-            if (responseParams[0].equals("200")){
+            final int statusCode = Integer.parseInt(responseParams[0]);
+            if (statusCode == 200){
                 try {
                     JSONObject jsonObj = new JSONObject(responseParams[1]);
                     StringBuilder sb = new StringBuilder();
@@ -207,7 +208,9 @@ public class MainActivity extends AppCompatActivity {
                     new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface di, int i){
                         mainActivity.enableLoginButton();
-                        mainActivity.displayDashboard();
+                        if (statusCode == 200) {
+                            mainActivity.displayDashboard();
+                        }
                         di.cancel();
                         }
                     });
