@@ -25,17 +25,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp">
+                    android:background="@color/colorDefaultShadeBackground"
+                    >
                     <TextView
                         android:id="@+id/dashboard_heading"
                         android:textSize="20sp"
+                        android:layout_margin="20dp"
+                        android:textColor="@color/colorDefaultShadeFont"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></TabWidget>
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorDefaultShadeFont"
+                    android:background="@color/colorDefaultShadeBackground"/>
                 <FrameLayout
                     android:id="@android:id/tabcontent"
                     android:layout_width="match_parent"
@@ -81,7 +86,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/colorDefaultShadeBackground">
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -101,6 +107,7 @@
                     android:text="@string/main_welcome_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorDefaultShadeFont"
                     android:textSize="24sp"
                     />
                 <TextView
@@ -108,6 +115,7 @@
                     android:text="@string/main_login_instructions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorDefaultShadeFont"
                     android:textSize="16sp"
                     />
                 <TextView
@@ -116,6 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
+                    android:textColor="@color/colorDefaultShadeFont"
                     android:maxLines="1"
                     />
                 <EditText
@@ -123,12 +132,14 @@
                     android:maxLines="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorDefaultShadeFont"
                     />
                 <TextView
                     android:id="@+id/password_label"
                     android:text="@string/main_password_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorDefaultShadeFont"
                     />
                 <EditText
                     android:id="@+id/password_input"
@@ -136,12 +147,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:textColor="@color/colorDefaultShadeFont"
                     />
                 <Button
                     android:id="@+id/login_button"
                     android:text="@string/main_login_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorDefaultShadeButtonFont"
+                    android:background="@color/colorDefaultShadeButton"
                     />
                 <TextView
                     android:id="@+id/welcome_signup_instructions_textview"
@@ -149,6 +163,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="10sp"
+                    android:textColor="@color/colorDefaultShadeFont"
                     />
             </LinearLayout>
             <LinearLayout

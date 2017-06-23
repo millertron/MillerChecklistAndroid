@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         tabHost.addTab(spec);
 
         dashboardHeader = (TextView) findViewById(R.id.dashboard_heading);
-        dashboardHeader.setText("Checklists for "
+        dashboardHeader.setText("Checklists for \n"
             + user.getFirstName() + " " + user.getLastName()
                 + " (" + user.getUsername() + ")");
 
