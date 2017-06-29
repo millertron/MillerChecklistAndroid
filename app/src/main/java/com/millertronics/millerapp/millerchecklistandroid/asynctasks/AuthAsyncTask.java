@@ -36,6 +36,7 @@ public class AuthAsyncTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPreExecute(){
         progressDialog.setMessage(mainActivity.getString(R.string.submitting_request));
+        progressDialog.setCancelable(false);
         progressDialog.show();
     }
 
