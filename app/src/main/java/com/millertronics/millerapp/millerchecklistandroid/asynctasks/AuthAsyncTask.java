@@ -1,10 +1,14 @@
-package com.millertronics.millerapp.millerchecklistandroid;
+package com.millertronics.millerapp.millerchecklistandroid.asynctasks;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+
+import com.millertronics.millerapp.millerchecklistandroid.R;
+import com.millertronics.millerapp.millerchecklistandroid.activities.MainActivity;
+import com.millertronics.millerapp.millerchecklistandroid.models.User;
 
 import org.json.JSONObject;
 

@@ -1,4 +1,4 @@
-package com.millertronics.millerapp.millerchecklistandroid;
+package com.millertronics.millerapp.millerchecklistandroid.models;
 
 /**
  * Created by koha.choji on 23/06/2017.

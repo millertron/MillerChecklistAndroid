@@ -1,10 +1,6 @@
-package com.millertronics.millerapp.millerchecklistandroid;
+package com.millertronics.millerapp.millerchecklistandroid.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,14 +12,11 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import org.json.JSONObject;
+import com.millertronics.millerapp.millerchecklistandroid.asynctasks.AuthAsyncTask;
+import com.millertronics.millerapp.millerchecklistandroid.R;
+import com.millertronics.millerapp.millerchecklistandroid.models.User;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -98,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 
                 disableLoginButton();
