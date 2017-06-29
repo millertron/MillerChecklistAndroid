@@ -3,6 +3,7 @@
 
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
+    <string name="submitting_request">Submitting request...</string>
 
     <string name="default_mutex_url">https://miller-checklist.herokuapp.com</string>
     <string name="api_prefix">/api/v1</string>

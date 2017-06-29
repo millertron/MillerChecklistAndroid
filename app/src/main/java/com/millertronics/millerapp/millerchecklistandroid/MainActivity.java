@@ -1,5 +1,6 @@
 package com.millertronics.millerapp.millerchecklistandroid;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
@@ -121,9 +122,17 @@ public class MainActivity extends AppCompatActivity {
 
         private MainActivity mainActivity;
         private static final String DELIMITER = "%BREAK%";
+        private ProgressDialog progressDialog;
 
         public AuthAsyncTask(MainActivity mainActivity){
             this.mainActivity = mainActivity;
+            progressDialog = new ProgressDialog(this.mainActivity);
+        }
+
+        @Override
+        protected void onPreExecute(){
+            progressDialog.setMessage(mainActivity.getString(R.string.submitting_request));
+            progressDialog.show();
         }
 
         @Override
@@ -169,7 +178,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result){
             super.onPostExecute(result);
-
+            if (progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
             final String[] responseParams = result.split(DELIMITER);
 
             String message = null;
@@ -194,27 +205,25 @@ public class MainActivity extends AppCompatActivity {
 
                     User.setCurrentUser(user);
 
+                    mainActivity.displayDashboard();
                 } catch (Exception e){
                     Log.e(mainActivity.getClass().getName(), Log.getStackTraceString(e));
                     message = responseParams[1];
                 }
             }else {
                 message = responseParams[1];
+                AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+                builder.setMessage(message);
+                builder.setCancelable(false);
+                builder.setPositiveButton(R.string.dialog_ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface di, int i) {
+                                mainActivity.enableLoginButton();
+                                di.cancel();
+                            }
+                        });
+                builder.show();
             }
-            AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-            builder.setMessage(message);
-            builder.setCancelable(false);
-            builder.setPositiveButton(R.string.dialog_ok,
-                    new DialogInterface.OnClickListener(){
-                        public void onClick(DialogInterface di, int i){
-                        mainActivity.enableLoginButton();
-                        if (statusCode == 200) {
-                            mainActivity.displayDashboard();
-                        }
-                        di.cancel();
-                        }
-                    });
-            builder.show();
         }
     }
 
