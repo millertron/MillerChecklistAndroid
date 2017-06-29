@@ -1,5 +1,6 @@
 package com.millertronics.millerapp.millerchecklistandroid;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TabHost;
@@ -96,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
                 disableLoginButton();
                 try {
                     submitAndProcessAuthenticationRequest();
