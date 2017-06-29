@@ -88,14 +88,6 @@ public class AuthAsyncTask extends AsyncTask<String, Void, String> {
         if (statusCode == 200){
             try {
                 JSONObject jsonObj = new JSONObject(responseParams[1]);
-                StringBuilder sb = new StringBuilder();
-                sb.append("Welcome ")
-                        .append(jsonObj.getString("first_name"))
-                        .append(" ")
-                        .append(jsonObj.getString("last_name"))
-                        .append("!");
-                message = sb.toString();
-
                 User user = new User(jsonObj.getInt("id"),
                         jsonObj.getString("username"),
                         jsonObj.getString("first_name"),
@@ -108,21 +100,25 @@ public class AuthAsyncTask extends AsyncTask<String, Void, String> {
                 mainActivity.displayDashboard();
             } catch (Exception e){
                 Log.e(mainActivity.getClass().getName(), Log.getStackTraceString(e));
-                message = responseParams[1];
+                displayMessageDialog(mainActivity.getString(R.string.auth_error));
             }
         }else {
             message = responseParams[1];
-            AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-            builder.setMessage(message);
-            builder.setCancelable(false);
-            builder.setPositiveButton(R.string.dialog_ok,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface di, int i) {
-                            mainActivity.enableLoginButton();
-                            di.cancel();
-                        }
-                    });
-            builder.show();
+            displayMessageDialog(message);
         }
+    }
+
+    private void displayMessageDialog(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.dialog_ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface di, int i) {
+                        mainActivity.enableLoginButton();
+                        di.cancel();
+                    }
+                });
+        builder.show();
     }
 }
