@@ -1,10 +1,12 @@
 package com.millertronics.millerapp.millerchecklistandroid.activities;
 
 import android.app.Activity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,8 +60,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void displayDashboard() {
         if (viewFlipper.getDisplayedChild() != 0) {
+            viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,
+                    android.R.anim.fade_out));
             viewFlipper.setDisplayedChild(0);
         }
+
+        List<Checklist> userChecklists = retrieveUserChecklists();
+
         User user = User.getCurrentUser();
         List<Checklist> dailyChecklists = retrieveChecklists(Checklist.Frequency.DAILY);
         List<Checklist> weeklyChecklists = retrieveChecklists(Checklist.Frequency.WEEKLY);
@@ -112,6 +119,15 @@ public class MainActivity extends AppCompatActivity {
             + user.getFirstName() + " " + user.getLastName()
                 + " (" + user.getUsername() + ")");
 
+        for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)
+        {
+            ((TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title))
+                    .setTextColor(ContextCompat.getColor(this, R.color.colorDefaultShadeFont));
+        }
+    }
+
+    private List<Checklist> retrieveUserChecklists() {
+        return new ArrayList<>();
     }
 
     private List<Checklist> retrieveChecklists(Checklist.Frequency frequency) {
@@ -135,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayLoginForm() {
 
+        viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,
+                android.R.anim.fade_in));
         viewFlipper.setDisplayedChild(1);
 
         usernameInput = (EditText) findViewById(R.id.username_input);
