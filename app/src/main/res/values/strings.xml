@@ -7,11 +7,19 @@
 
     <string name="default_mutex_url">https://miller-checklist.herokuapp.com</string>
     <string name="api_prefix">/api/v1</string>
-    <string name="api_authentication_path">/authentication</string>
     <string name="api_content_type">Content-Type</string>
     <string name="api_content_type_json">application/json</string>
+
+    <string name="api_authentication_path">/authentication</string>
     <string name="api_auth_id">auth_id</string>
     <string name="api_auth_key">auth_key</string>
+
+    <string name="api_auth_header">Authorization</string>
+
+    <string name="api_checklists_path">/checklists</string>
+    <string name="api_owner_id">owner_id</string>
+    <string name="api_frequency">frequency</string>
+    <string name="api_auth_token">Token token=</string>
 
     <string name="main_welcome_message">Welcome to MUTEX</string>
     <string name="main_login_instructions">Please login with your MUTEX account.</string>
@@ -23,4 +31,5 @@
     <string name="dashboard_tab_weekly">Weekly</string>
     <string name="dashboard_tab_monthly">Monthly</string>
     <string name="auth_error">Error authenticating user...</string>
+
 </resources>

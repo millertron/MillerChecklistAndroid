@@ -1,6 +1,7 @@
 package com.millertronics.millerapp.millerchecklistandroid.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.ViewFlipper;
 import com.millertronics.millerapp.millerchecklistandroid.arrayadapter.ChecklistAdapter;
 import com.millertronics.millerapp.millerchecklistandroid.asynctasks.AuthAsyncTask;
 import com.millertronics.millerapp.millerchecklistandroid.R;
+import com.millertronics.millerapp.millerchecklistandroid.asynctasks.RetrieveChecklistsAsyncTask;
 import com.millertronics.millerapp.millerchecklistandroid.models.Checklist;
 import com.millertronics.millerapp.millerchecklistandroid.models.User;
 
@@ -26,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private User user;
 
     private ViewFlipper viewFlipper;
     //Dashboard views
@@ -36,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText usernameInput;
     private EditText passwordInput;
     private Button loginButton;
+
+    private ListView weeklyChecklistsView;
+    private ListView dailyChecklistsView;
+    private ListView monthlyChecklistsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,58 +73,44 @@ public class MainActivity extends AppCompatActivity {
             viewFlipper.setDisplayedChild(0);
         }
 
-        List<Checklist> userChecklists = retrieveUserChecklists();
+        user = User.getCurrentUser();
 
-        User user = User.getCurrentUser();
-        List<Checklist> dailyChecklists = retrieveChecklists(Checklist.Frequency.DAILY);
-        List<Checklist> weeklyChecklists = retrieveChecklists(Checklist.Frequency.WEEKLY);
-        List<Checklist> monthlyChecklists = retrieveChecklists(Checklist.Frequency.MONTHLY);
+        setupTabs();
 
+        dailyChecklistsView = (ListView) findViewById(R.id.daily_list);
+        weeklyChecklistsView = (ListView) findViewById(R.id.weekly_list);
+        monthlyChecklistsView = (ListView) findViewById(R.id.monthly_list);
+
+        retrieveChecklists(Checklist.FREQUENCY_DAILY);
+        retrieveChecklists(Checklist.FREQUENCY_WEEKLY);
+        retrieveChecklists(Checklist.FREQUENCY_MONTHLY);
+
+    }
+
+    private void setupTabs(){
         tabHost = (TabHost) findViewById(R.id.tabhost);
         tabHost.setup();
 
         TabHost.TabSpec spec = tabHost.newTabSpec(getString(R.string.dashboard_tab_daily));
+
         spec.setContent(R.id.tab_daily);
         spec.setIndicator(getString(R.string.dashboard_tab_daily));
         tabHost.addTab(spec);
 
-        ListView dailyChecklistsView = (ListView) findViewById(R.id.daily_list);
-        ChecklistAdapter dAdapter = new ChecklistAdapter(
-                this,
-                dailyChecklists.toArray(new Checklist[dailyChecklists.size()])
-        );
-        dailyChecklistsView.setAdapter(dAdapter);
-        dAdapter.notifyDataSetChanged();
 
         spec = tabHost.newTabSpec(getString(R.string.dashboard_tab_weekly));
         spec.setContent(R.id.tab_weekly);
         spec.setIndicator(getString(R.string.dashboard_tab_weekly));
         tabHost.addTab(spec);
 
-        ListView weeklyChecklistsView = (ListView) findViewById(R.id.weekly_list);
-        ChecklistAdapter wAdapter = new ChecklistAdapter(
-                this,
-                weeklyChecklists.toArray(new Checklist[weeklyChecklists.size()])
-        );
-        weeklyChecklistsView.setAdapter(wAdapter);
-        wAdapter.notifyDataSetChanged();
-
         spec = tabHost.newTabSpec(getString(R.string.dashboard_tab_monthly));
         spec.setContent(R.id.tab_monthly);
         spec.setIndicator(getString(R.string.dashboard_tab_monthly));
         tabHost.addTab(spec);
 
-        ListView monthlyChecklistsView = (ListView) findViewById(R.id.monthly_list);
-        ChecklistAdapter mAdapter = new ChecklistAdapter(
-                this,
-                monthlyChecklists.toArray(new Checklist[monthlyChecklists.size()])
-        );
-        monthlyChecklistsView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-
         dashboardHeader = (TextView) findViewById(R.id.dashboard_heading);
         dashboardHeader.setText("Checklists for \n"
-            + user.getFirstName() + " " + user.getLastName()
+                + user.getFirstName() + " " + user.getLastName()
                 + " (" + user.getUsername() + ")");
 
         for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)
@@ -126,27 +120,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private List<Checklist> retrieveUserChecklists() {
-        return new ArrayList<>();
-    }
-
-    private List<Checklist> retrieveChecklists(Checklist.Frequency frequency) {
-        List<Checklist> checklists = new ArrayList<>();
-        String name = "";
-        switch (frequency){
-            case DAILY:
-                name = "Daily Checklist 1";
+    public void populateListViewWithChecklists(String frequencyString, List<Checklist> checklists){
+        ListView listView = null;
+        switch (frequencyString) {
+            case "daily":
+                listView = dailyChecklistsView;
                 break;
-            case WEEKLY:
-                name = "Weekly Checklist 1";
+            case "weekly":
+                listView = weeklyChecklistsView;
                 break;
-            case MONTHLY:
-                name = "Monthly Checklist 1";
+            case "monthly":
+                listView = monthlyChecklistsView;
+                break;
+            default:
                 break;
         }
-        Checklist checklist = new Checklist.Builder().name(name).build();
-        checklists.add(checklist);
-        return checklists;
+        ChecklistAdapter checklistAdapter = new ChecklistAdapter(
+                this,
+                checklists.toArray(new Checklist[checklists.size()])
+        );
+        if (listView != null) {
+            listView.setAdapter(checklistAdapter);
+            checklistAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void retrieveChecklists(String frequency) {
+        new RetrieveChecklistsAsyncTask(this, frequency, user).execute();
     }
 
     private void displayLoginForm() {
@@ -183,8 +183,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void submitAndProcessAuthenticationRequest() throws IOException {
-        AuthAsyncTask authAsyncTask = new AuthAsyncTask(this);
-        authAsyncTask.execute(usernameInput.getText().toString(), passwordInput.getText().toString());
+        new AuthAsyncTask(this)
+                .execute(usernameInput.getText().toString(), passwordInput.getText().toString());
     }
 
     public void enableLoginButton(){

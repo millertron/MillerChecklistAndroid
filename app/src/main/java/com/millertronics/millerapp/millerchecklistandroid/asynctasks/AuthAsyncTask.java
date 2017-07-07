@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.ProtocolException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -22,10 +23,9 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by koha.choji on 29/06/2017.
  */
 
-public class AuthAsyncTask extends AsyncTask<String, Void, String> {
+public class AuthAsyncTask extends HttpRequestAsyncTask {
 
     private MainActivity mainActivity;
-    private static final String DELIMITER = "%BREAK%";
     private ProgressDialog progressDialog;
 
     public AuthAsyncTask(MainActivity mainActivity){
@@ -40,16 +40,14 @@ public class AuthAsyncTask extends AsyncTask<String, Void, String> {
         progressDialog.show();
     }
 
-    @Override
-    protected String doInBackground(String... params) {
-        String authUrlString = mainActivity.getString(R.string.default_mutex_url)
-                + mainActivity.getString(R.string.api_prefix)
-                + mainActivity.getString(R.string.api_authentication_path);
-        try {
-            URL authUrl = new URL(authUrlString);
-            HttpsURLConnection connection = (HttpsURLConnection) authUrl.openConnection();
-            connection.setReadTimeout(60 * 1000);
-            connection.setConnectTimeout(60 * 1000);
+    protected String getUrlString(String... params){
+        return new StringBuilder().append(mainActivity.getString(R.string.default_mutex_url))
+                .append(mainActivity.getString(R.string.api_prefix))
+                .append(mainActivity.getString(R.string.api_authentication_path)).toString();
+    }
+
+    protected void configureConnection(HttpsURLConnection connection, String... params)
+            throws ProtocolException {
             connection.setRequestMethod("POST");
             connection.setRequestProperty(mainActivity.getString(R.string.api_content_type),
                     mainActivity.getString(R.string.api_content_type_json));
@@ -57,27 +55,6 @@ public class AuthAsyncTask extends AsyncTask<String, Void, String> {
                     params[0]);
             connection.setRequestProperty(mainActivity.getString(R.string.api_auth_key),
                     params[1]);
-            int responseCode = connection.getResponseCode();
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader( responseCode == 200 ? connection.getInputStream()
-                            : connection.getErrorStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            response.append(responseCode);
-            response.append(DELIMITER);
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            return response.toString();
-
-        } catch (Exception e){
-            Log.e(AuthAsyncTask.class.getName(), Log.getStackTraceString(e));
-        }
-        return "Error in running async task!";
     }
 
     @Override

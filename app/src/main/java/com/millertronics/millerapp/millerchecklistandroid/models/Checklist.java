@@ -1,5 +1,7 @@
 package com.millertronics.millerapp.millerchecklistandroid.models;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,11 @@ public class Checklist {
     private String name;
     private String description;
     private List<ChecklistItem> checklistItems = new ArrayList<ChecklistItem>();
+
+    public static final String FREQUENCY_DAILY = "daily";
+    public static final String FREQUENCY_WEEKLY = "weekly";
+    public static final String FREQUENCY_MONTHLY = "monthly";
+
 
     public Checklist(){
 
@@ -65,15 +72,12 @@ public class Checklist {
         this.checklistItems = checklistItems;
     }
 
-    public enum Frequency {
-        DAILY, WEEKLY, MONTHLY
-    }
-
     public static class Builder{
         private Integer id;
         private String frequency;
         private String name;
         private String description;
+        private List<ChecklistItem> checklistItems = new ArrayList<>();
 
         public Builder(){
 
@@ -96,6 +100,11 @@ public class Checklist {
 
         public Builder description(String description) {
             this.description = description;
+            return this;
+        }
+
+        public Builder addChecklistItem(ChecklistItem item){
+            checklistItems.add(item);
             return this;
         }
 
