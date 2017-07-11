@@ -1,6 +1,9 @@
 package com.millertronics.millerapp.millerchecklistandroid.asynctasks;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.millertronics.millerapp.millerchecklistandroid.R;
@@ -65,6 +68,19 @@ public abstract class HttpRequestAsyncTask extends AsyncTask<String, Void, Strin
         } catch (Exception e){
             Log.e(AuthAsyncTask.class.getName(), Log.getStackTraceString(e));
         }
-        return "Error in running async task!";
+        return "";
+    }
+
+    protected void displayErrorDialogOnFail(Activity activity){
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(R.string.dialog_error);
+        builder.setMessage(R.string.dialog_connection_error);
+        builder.setPositiveButton(R.string.dialog_ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface di, int i) {
+                        di.cancel();
+                    }
+                });
+        builder.show();
     }
 }

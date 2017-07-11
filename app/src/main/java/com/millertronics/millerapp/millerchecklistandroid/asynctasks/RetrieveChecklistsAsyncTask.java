@@ -9,6 +9,7 @@ import com.millertronics.millerapp.millerchecklistandroid.models.Checklist;
 import com.millertronics.millerapp.millerchecklistandroid.models.ChecklistItem;
 import com.millertronics.millerapp.millerchecklistandroid.models.User;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -60,44 +61,46 @@ public class RetrieveChecklistsAsyncTask extends HttpRequestAsyncTask{
 
     protected void onPostExecute(String result){
         super.onPostExecute(result);
-        final String[] responseParams = result.split(DELIMITER);
+        if (StringUtils.isBlank(result)){
+            displayErrorDialogOnFail(mainActivity);
+        } else {
+            final String[] responseParams = result.split(DELIMITER);
 
-        final int statusCode = Integer.parseInt(responseParams[0]);
-        if (statusCode == 200){
-            try {
-                List<Checklist> checklists = new ArrayList<>();
-                JSONArray jsonArray = new JSONArray(responseParams[1]);
-                for (int i = 0; i < jsonArray.length(); i++){
-                    JSONObject jsonClObject = jsonArray.getJSONObject(i);
-                    JSONArray jsonCliArray = jsonClObject.getJSONArray("checklist_items");
-                    JSONObject jsonCliObject = jsonCliArray.getJSONObject(0);
-                    checklists.add(
-                        new Checklist.Builder()
-                                .id(jsonClObject.getInt("id"))
-                                .frequency(jsonClObject.getString("frequency"))
-                                .name(jsonClObject.getString("name"))
-                                .description(jsonClObject.getString("description"))
-                                .addChecklistItem(
-                                        new ChecklistItem.Builder()
-                                            .id(jsonCliObject.getInt("id"))
-                                            .checklistId(jsonCliObject.getInt("checklist_id"))
-                                            .text(jsonCliObject.getString("text"))
-                                            .metricTargetMax(
-                                                    jsonCliObject.getString("metric_target_max"))
-                                            .metricTargetMin(
-                                                    jsonCliObject.getString("metric_target_min"))
-                                            .mandatory(jsonCliObject.getBoolean("mandatory"))
-                                            .build()
-                                )
-                                .build()
-                    );
+            final int statusCode = Integer.parseInt(responseParams[0]);
+            if (statusCode == 200) {
+                try {
+                    List<Checklist> checklists = new ArrayList<>();
+                    JSONArray jsonArray = new JSONArray(responseParams[1]);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonClObject = jsonArray.getJSONObject(i);
+                        JSONArray jsonCliArray = jsonClObject.getJSONArray("checklist_items");
+                        JSONObject jsonCliObject = jsonCliArray.getJSONObject(0);
+                        checklists.add(
+                                new Checklist.Builder()
+                                        .id(jsonClObject.getInt("id"))
+                                        .frequency(jsonClObject.getString("frequency"))
+                                        .name(jsonClObject.getString("name"))
+                                        .description(jsonClObject.getString("description"))
+                                        .addChecklistItem(
+                                                new ChecklistItem.Builder()
+                                                        .id(jsonCliObject.getInt("id"))
+                                                        .checklistId(jsonCliObject.getInt("checklist_id"))
+                                                        .text(jsonCliObject.getString("text"))
+                                                        .metricTargetMax(
+                                                                jsonCliObject.getString("metric_target_max"))
+                                                        .metricTargetMin(
+                                                                jsonCliObject.getString("metric_target_min"))
+                                                        .mandatory(jsonCliObject.getBoolean("mandatory"))
+                                                        .build()
+                                        )
+                                        .build()
+                        );
+                    }
+                    mainActivity.populateListViewWithChecklists(frequency, checklists);
+                } catch (Exception e) {
+                    Log.e(mainActivity.getClass().getName(), Log.getStackTraceString(e));
                 }
-                mainActivity.populateListViewWithChecklists(frequency, checklists);
-            } catch (Exception e){
-                Log.e(mainActivity.getClass().getName(), Log.getStackTraceString(e));
             }
-        }else {
-
         }
     }
 

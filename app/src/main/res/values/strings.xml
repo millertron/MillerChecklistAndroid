@@ -3,6 +3,10 @@
 
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
+
+    <string name="dialog_error">Error!</string>
+    <string name="dialog_connection_error">Unable to establish connection to server.</string>
+    
     <string name="submitting_request">Submitting request...</string>
 
     <string name="default_mutex_url">https://miller-checklist.herokuapp.com</string>

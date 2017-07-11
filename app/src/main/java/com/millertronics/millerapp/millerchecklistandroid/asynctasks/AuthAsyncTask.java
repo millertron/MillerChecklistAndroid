@@ -10,6 +10,7 @@ import com.millertronics.millerapp.millerchecklistandroid.R;
 import com.millertronics.millerapp.millerchecklistandroid.activities.MainActivity;
 import com.millertronics.millerapp.millerchecklistandroid.models.User;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -63,30 +64,37 @@ public class AuthAsyncTask extends HttpRequestAsyncTask {
         if (progressDialog.isShowing()){
             progressDialog.dismiss();
         }
-        final String[] responseParams = result.split(DELIMITER);
 
-        String message = null;
-        final int statusCode = Integer.parseInt(responseParams[0]);
-        if (statusCode == 200){
-            try {
-                JSONObject jsonObj = new JSONObject(responseParams[1]);
-                User user = new User(jsonObj.getInt("id"),
-                        jsonObj.getString("username"),
-                        jsonObj.getString("first_name"),
-                        jsonObj.getString("last_name"),
-                        jsonObj.getString("email"),
-                        jsonObj.getString("api_key"));
+        if (StringUtils.isBlank(result)){
+            displayErrorDialogOnFail(mainActivity);
+            mainActivity.enableLoginButton();
+        } else {
 
-                User.setCurrentUser(user);
+            final String[] responseParams = result.split(DELIMITER);
 
-                mainActivity.displayDashboard();
-            } catch (Exception e){
-                Log.e(mainActivity.getClass().getName(), Log.getStackTraceString(e));
-                displayMessageDialog(mainActivity.getString(R.string.auth_error));
+            String message = null;
+            final int statusCode = Integer.parseInt(responseParams[0]);
+            if (statusCode == 200) {
+                try {
+                    JSONObject jsonObj = new JSONObject(responseParams[1]);
+                    User user = new User(jsonObj.getInt("id"),
+                            jsonObj.getString("username"),
+                            jsonObj.getString("first_name"),
+                            jsonObj.getString("last_name"),
+                            jsonObj.getString("email"),
+                            jsonObj.getString("api_key"));
+
+                    User.setCurrentUser(user);
+
+                    mainActivity.displayDashboard();
+                } catch (Exception e) {
+                    Log.e(mainActivity.getClass().getName(), Log.getStackTraceString(e));
+                    displayMessageDialog(mainActivity.getString(R.string.auth_error));
+                }
+            } else {
+                message = responseParams[1];
+                displayMessageDialog(message);
             }
-        }else {
-            message = responseParams[1];
-            displayMessageDialog(message);
         }
     }
 
