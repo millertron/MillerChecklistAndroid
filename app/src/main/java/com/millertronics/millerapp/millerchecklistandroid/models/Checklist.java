@@ -1,5 +1,7 @@
 package com.millertronics.millerapp.millerchecklistandroid.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,19 +10,16 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.DateFormat;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by koha.choji on 26/06/2017.
  */
 
-public class Checklist {
+public class Checklist{
+
     private Integer id;
     private String frequency;
     private String name;
@@ -43,6 +42,7 @@ public class Checklist {
         this.name = builder.name;
         this.description = builder.description;
         this.completed = builder.completed;
+        this.checklistItems = builder.checklistItems;
     }
 
     public Integer getId() {

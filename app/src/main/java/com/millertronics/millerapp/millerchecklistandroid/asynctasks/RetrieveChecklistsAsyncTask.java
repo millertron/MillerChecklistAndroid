@@ -88,6 +88,8 @@ public class RetrieveChecklistsAsyncTask extends HttpRequestAsyncTask{
                                                         .checklistId(jsonCliObject
                                                                 .getInt("checklist_id"))
                                                         .text(jsonCliObject.getString("text"))
+                                                        .valueType(jsonCliObject
+                                                                .getString("value_type"))
                                                         .metricTargetMax(jsonCliObject
                                                                 .getString("metric_target_max"))
                                                         .metricTargetMin(jsonCliObject

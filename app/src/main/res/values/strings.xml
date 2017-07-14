@@ -6,7 +6,7 @@
 
     <string name="dialog_error">Error!</string>
     <string name="dialog_connection_error">Unable to establish connection to server.</string>
-    
+
     <string name="submitting_request">Submitting request...</string>
 
     <string name="default_mutex_url">https://miller-checklist.herokuapp.com</string>
@@ -35,5 +35,8 @@
     <string name="dashboard_tab_weekly">Weekly</string>
     <string name="dashboard_tab_monthly">Monthly</string>
     <string name="auth_error">Error authenticating user...</string>
+
+    <string name="implement_checklist_button">SUBMIT</string>
+    <string name="submit_button">SUBMIT</string>
 
 </resources>
