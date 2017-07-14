@@ -36,7 +36,6 @@ public class ChecklistAdapter extends ArrayAdapter<Checklist> {
 
         Checklist checklist = data[position];
         textView.setText(checklist.getName());
-
         textView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
 

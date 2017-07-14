@@ -2,7 +2,18 @@ package com.millertronics.millerapp.millerchecklistandroid.models;
 
 import android.util.Log;
 
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.text.DateFormat;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,6 +25,7 @@ public class Checklist {
     private String frequency;
     private String name;
     private String description;
+    private boolean completed = false;
     private List<ChecklistItem> checklistItems = new ArrayList<ChecklistItem>();
 
     public static final String FREQUENCY_DAILY = "daily";
@@ -30,6 +42,7 @@ public class Checklist {
         this.frequency = builder.frequency;
         this.name = builder.name;
         this.description = builder.description;
+        this.completed = builder.completed;
     }
 
     public Integer getId() {
@@ -64,6 +77,14 @@ public class Checklist {
         this.description = description;
     }
 
+    public Boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
+
     public List<ChecklistItem> getChecklistItems() {
         return checklistItems;
     }
@@ -77,6 +98,7 @@ public class Checklist {
         private String frequency;
         private String name;
         private String description;
+        private boolean completed = false;
         private List<ChecklistItem> checklistItems = new ArrayList<>();
 
         public Builder(){
@@ -105,6 +127,38 @@ public class Checklist {
 
         public Builder addChecklistItem(ChecklistItem item){
             checklistItems.add(item);
+            return this;
+        }
+
+        public Builder completed(String completedDate){
+            this.completed = false;
+            if (StringUtils.isNotBlank(completedDate)) {
+                DateTimeFormatter formatter = DateTimeFormat
+                        .forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                try {
+                    DateTime last_completed_date = formatter.parseDateTime(completedDate);
+                    switch (frequency) {
+                        case Checklist.FREQUENCY_DAILY:
+                            this.completed = last_completed_date.isAfter(new DateTime()
+                                    .withTimeAtStartOfDay());
+                            break;
+                        case Checklist.FREQUENCY_WEEKLY:
+                            this.completed = last_completed_date.isAfter(new DateTime()
+                                    .withDayOfWeek(DateTimeConstants.MONDAY)
+                                    .withTimeAtStartOfDay());
+                            break;
+                        case Checklist.FREQUENCY_MONTHLY:
+                            this.completed = last_completed_date.isAfter(new DateTime()
+                                    .dayOfMonth().withMinimumValue());
+                            break;
+                        default:
+                            this.completed = false;
+                            break;
+                    }
+                } catch (Exception e) {
+                    Log.e(Checklist.class.getName(), Log.getStackTraceString(e));
+                }
+            }
             return this;
         }
 

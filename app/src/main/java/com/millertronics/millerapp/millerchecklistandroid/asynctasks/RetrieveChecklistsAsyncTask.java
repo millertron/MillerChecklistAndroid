@@ -81,16 +81,19 @@ public class RetrieveChecklistsAsyncTask extends HttpRequestAsyncTask{
                                         .frequency(jsonClObject.getString("frequency"))
                                         .name(jsonClObject.getString("name"))
                                         .description(jsonClObject.getString("description"))
+                                        .completed(jsonClObject.getString("last_implemented_date"))
                                         .addChecklistItem(
                                                 new ChecklistItem.Builder()
                                                         .id(jsonCliObject.getInt("id"))
-                                                        .checklistId(jsonCliObject.getInt("checklist_id"))
+                                                        .checklistId(jsonCliObject
+                                                                .getInt("checklist_id"))
                                                         .text(jsonCliObject.getString("text"))
-                                                        .metricTargetMax(
-                                                                jsonCliObject.getString("metric_target_max"))
-                                                        .metricTargetMin(
-                                                                jsonCliObject.getString("metric_target_min"))
-                                                        .mandatory(jsonCliObject.getBoolean("mandatory"))
+                                                        .metricTargetMax(jsonCliObject
+                                                                .getString("metric_target_max"))
+                                                        .metricTargetMin(jsonCliObject
+                                                                .getString("metric_target_min"))
+                                                        .mandatory(jsonCliObject
+                                                                .getBoolean("mandatory"))
                                                         .build()
                                         )
                                         .build()

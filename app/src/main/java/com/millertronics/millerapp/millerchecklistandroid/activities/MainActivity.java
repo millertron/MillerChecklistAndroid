@@ -1,10 +1,9 @@
 package com.millertronics.millerapp.millerchecklistandroid.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -16,15 +15,14 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.millertronics.millerapp.millerchecklistandroid.R;
 import com.millertronics.millerapp.millerchecklistandroid.arrayadapter.ChecklistAdapter;
 import com.millertronics.millerapp.millerchecklistandroid.asynctasks.AuthAsyncTask;
-import com.millertronics.millerapp.millerchecklistandroid.R;
 import com.millertronics.millerapp.millerchecklistandroid.asynctasks.RetrieveChecklistsAsyncTask;
 import com.millertronics.millerapp.millerchecklistandroid.models.Checklist;
 import com.millertronics.millerapp.millerchecklistandroid.models.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
