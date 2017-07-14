@@ -8,4 +8,6 @@
     <color name="colorDefaultShadeFont">#FFFFFF</color>
     <color name="colorDefaultShadeButton">#8F8FBF</color>
     <color name="colorDefaultShadeButtonFont">#FFFFFF</color>
+    <color name="completeChecklistFont">#FFFFFF</color>
+    <color name="completeChecklistBackground">#32CD32</color>
 </resources>

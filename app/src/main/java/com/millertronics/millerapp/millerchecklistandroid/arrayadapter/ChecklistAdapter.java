@@ -3,6 +3,7 @@ package com.millertronics.millerapp.millerchecklistandroid.arrayadapter;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,12 @@ public class ChecklistAdapter extends ArrayAdapter<Checklist> {
 
         Checklist checklist = data[position];
         textView.setText(checklist.getName());
+        if (checklist.isCompleted()){
+            textView.setTextColor(ContextCompat.getColor(context,
+                    R.color.completeChecklistFont));
+            rowView.setBackgroundColor(ContextCompat.getColor(context,
+                    R.color.completeChecklistBackground));
+        }
         textView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
 
